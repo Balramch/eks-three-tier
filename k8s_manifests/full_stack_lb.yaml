@@ -1,0 +1,42 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mainlb
+  namespace: eks-test
+  annotations:
+    alb.ingress.kubernetes.io/group.name: demo-lb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    #alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    #alb.ingress.kubernetes.io/ssl-redirect: '443'
+    #alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:YOUR_ACCOUNT_ID:certificate/NEW_CERT_ID
+
+spec:
+  ingressClassName: alb
+  rules:
+  #- host: app.sandipdas.in
+    - http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 8080
+
+          - path: /v2/api
+            pathType: Prefix
+            backend:
+              service:
+                name: api/v2
+                port:
+                  number: 8080
+
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 3000
