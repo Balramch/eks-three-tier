@@ -1,0 +1,6 @@
+apiVersion: v2
+name: three-tier
+description: Helm chart for the three-tier Todo app (frontend, backend, mongodb)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

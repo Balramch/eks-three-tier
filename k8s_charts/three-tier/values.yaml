@@ -1,0 +1,71 @@
+# Default values for three-tier chart
+namespace: eks-test-dev
+
+backend:
+  enabled: true
+  name: api
+  replicas: 1
+  image:
+    repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8080
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  hpa:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 50
+
+frontend:
+  enabled: true
+  name: frontend
+  replicas: 1
+  image:
+    repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 80
+    targetPort: 3000
+
+mongodb:
+  enabled: true
+  name: mongodb
+  image: public.ecr.aws/docker/library/mongo:8.3.1
+  port: 27017
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  persistence:
+    enabled: false
+    size: 8Gi
+  auth:
+    username: admin
+    password: password123
+    useSecret: true
+
+ingress:
+  enabled: true
+  ingressClassName: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-path: /ok
+  host: "k8s-ekstestd-mainlb-03a173b961-1127969918.eu-central-1.elb.amazonaws.com"
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: false

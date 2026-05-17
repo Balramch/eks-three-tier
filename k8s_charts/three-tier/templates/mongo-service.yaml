@@ -1,0 +1,15 @@
+{{- if .Values.mongodb.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ include "three-tier.fullname" . }}-mongodb
+spec:
+  selector:
+    app: mongodb
+  ports:
+  - name: mongodb-svc
+    protocol: TCP
+    port: {{ .Values.mongodb.port }}
+    targetPort: {{ .Values.mongodb.port }}
+{{- end }}

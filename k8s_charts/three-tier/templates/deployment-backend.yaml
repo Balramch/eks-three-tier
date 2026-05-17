@@ -1,0 +1,58 @@
+{{- if .Values.backend.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    role: {{ .Values.backend.name }}
+    env: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      role: {{ .Values.backend.name }}
+  template:
+    metadata:
+      labels:
+        role: {{ .Values.backend.name }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml .Values.imagePullSecrets | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: {{ .Values.backend.name }}
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+        imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+        env:
+        - name: MONGO_CONN_STR
+          value: "mongodb://{{ .Values.mongodb.auth.username }}:{{ .Values.mongodb.auth.password }}@{{ include "three-tier.fullname" . }}-mongodb:{{ .Values.mongodb.port }}/todo?authSource=admin"
+        - name: MONGO_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "three-tier.fullname" . }}-mongo-secret
+              key: username
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "three-tier.fullname" . }}-mongo-secret
+              key: password
+        resources:
+{{ toYaml .Values.backend.resources | nindent 10 }}
+        ports:
+        - containerPort: {{ .Values.backend.port }}
+        livenessProbe:
+          httpGet:
+            path: /ok
+            port: {{ .Values.backend.port }}
+          initialDelaySeconds: 2
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+             path: /ok
+             port: {{ .Values.backend.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+{{- end }}

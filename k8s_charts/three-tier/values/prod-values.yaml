@@ -1,0 +1,61 @@
+# Production Values Overlay
+namespace: eks-test-prod
+
+backend:
+  enabled: true
+  replicas: 3
+  image:
+    repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-backend
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+  hpa:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 50
+
+frontend:
+  enabled: true
+  replicas: 3
+  image:
+    repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-frontend
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+
+mongodb:
+  enabled: true
+  auth:
+    username: admin
+    password: "${MONGO_PASSWORD}"  # Set via --set flag or secret store
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+  persistence:
+    enabled: true
+    size: 20Gi
+
+ingress:
+  enabled: true
+  ingressClassName: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+  host: api.example.com
+
+imagePullSecrets:
+  - name: ecr-secret
+
+serviceAccount:
+  create: true

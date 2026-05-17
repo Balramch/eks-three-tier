@@ -1,0 +1,48 @@
+# Development Values Overlay
+namespace: eks-test-dev
+
+backend:
+  enabled: true
+  replicas: 1
+  image:
+    repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-backend
+    tag: dev
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
+  hpa:
+    enabled: false
+
+frontend:
+  enabled: true
+  replicas: 1
+  image:
+    repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-frontend
+    tag: dev
+    pullPolicy: Always
+
+mongodb:
+  enabled: true
+  auth:
+    username: admin
+    password: devpassword123
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "250m"
+
+ingress:
+  enabled: true
+  ingressClassName: alb
+  host: k8s-ekstestd-mainlb-03a173b961-1127969918.eu-central-1.elb.amazonaws.com
+
+imagePullSecrets:
+  - name: ecr-secret

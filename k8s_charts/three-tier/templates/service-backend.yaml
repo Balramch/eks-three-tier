@@ -1,0 +1,14 @@
+{{- if .Values.backend.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.backend.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+  - port: {{ .Values.backend.port }}
+    protocol: TCP
+  type: ClusterIP
+  selector:
+    role: {{ .Values.backend.name }}
+{{- end }}
