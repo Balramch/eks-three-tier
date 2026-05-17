@@ -4,7 +4,7 @@ namespace: eks-test-dev
 backend:
   enabled: true
   name: api
-  replicas: 3
+  replicas: 1
   image:
     repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-backend
     tag: latest
@@ -26,7 +26,7 @@ backend:
 frontend:
   enabled: true
   name: frontend
-  replicas: 2
+  replicas: 1
   image:
     repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-frontend
     tag: latest
