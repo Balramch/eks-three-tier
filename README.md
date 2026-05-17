@@ -112,8 +112,8 @@ A production-grade, cloud-native **Todo application** deployed on **Amazon EKS**
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/three-tier-eks-project.git
-cd three-tier-eks-project
+git clone https://github.com/Balramch/eks-three-tier.git
+cd eks-three-tier
 ```
 
 ### 2. Provision Infrastructure with Terraform
@@ -294,6 +294,10 @@ terraform destroy
 
 ---
 
-## License
+## Author
+Balram Chaudhary
+ DevOps | DevSecOps | Security Researcher | CTF Player
 
-This project is licensed under the terms of the [LICENSE](./LICENSE) file.
+## Credit 
+ @trainwithshubham
+  
