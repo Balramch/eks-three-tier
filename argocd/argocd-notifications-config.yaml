@@ -7,7 +7,7 @@ metadata:
 data:
 
   service.webhook.discord: |-
-    url: https://discord.com/api/webhooks/1505966983768838317/ti-hhffXfvbt6yCO8Is85AOgL_-AHtv1Lfx6US08FX3L5pxHwuQD4HfY6gU_B_epGmHQ
+    url: https://discord.com/api/webhooks/your_discord_channel_id
     headers:
       - name: Content-Type
         value: application/json
