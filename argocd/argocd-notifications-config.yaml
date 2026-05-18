@@ -6,26 +6,64 @@ metadata:
 
 data:
 
-  context: |
-    discord:
-      webhook-url: $discord.webhook-url
+  service.webhook.discord: |-
+    url: https://discord.com/api/webhooks/1505966983768838317/ti-hhffXfvbt6yCO8Is85AOgL_-AHtv1Lfx6US08FX3L5pxHwuQD4HfY6gU_B_epGmHQ
+    headers:
+      - name: Content-Type
+        value: application/json
 
-  service.webhook.discord: |
-  url: https://discord.com/api/webhooks/1505966983768838317/ti-hhffXfvbt6yCO8Is85AOgL_-AHtv1Lfx6US08FX3L5pxHwuQD4HfY6gU_B_epGmHQ
-  headers:
-    - name: Content-Type
-      value: application/json
-
-  trigger.on-sync-succeeded: |
-    - when: app.status.operationState.phase == 'Succeeded'
+  trigger.on-sync-succeeded: |-
+    - when: app.status.operationState != null && app.status.operationState.phase == 'Succeeded'
       send:
         - app-sync-succeeded
 
-  template.app-sync-succeeded: |
+  template.app-sync-succeeded: |-
     webhook:
       discord:
         method: POST
         body: |
           {
             "content": "✅ App {{.app.metadata.name}} synced"
+          }
+  
+  trigger.on-sync-failed: |-
+    - when: app.status.operationState != null && app.status.operationState.phase == 'Failed'
+      send:
+        - app-sync-failed
+
+  trigger.on-sync-out-of-sync: |-
+    - when: app.status.sync.status == 'OutOfSync'
+      send:
+        - app-out-of-sync
+
+  trigger.on-health-degraded: |-
+    - when: app.status.health.status == 'Degraded'
+      send:
+        - app-health-degraded
+
+  template.app-sync-failed: |-
+    webhook:
+      discord:
+        method: POST
+        body: |
+          {
+            "content": "❌ App {{.app.metadata.name}} failed to sync. Message: {{.app.status.operationState.message}}"
+          }
+
+  template.app-out-of-sync: |-
+    webhook:
+      discord:
+        method: POST
+        body: |
+          {
+            "content": "⚠️ App {{.app.metadata.name}} is OutOfSync. Sync status: {{.app.status.sync.status}}"
+          }
+
+  template.app-health-degraded: |-
+    webhook:
+      discord:
+        method: POST
+        body: |
+          {
+            "content": "🚨 App {{.app.metadata.name}} health degraded: {{.app.status.health.status}}. Details: {{.app.status.health.message}}"
           }
