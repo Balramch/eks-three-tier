@@ -6,7 +6,7 @@ backend:
   name: api
   replicas: 1
   image:
-    repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-backendsa
+    repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-backend
     tag: latest
     pullPolicy: IfNotPresent
   port: 8080
