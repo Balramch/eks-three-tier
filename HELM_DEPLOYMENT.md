@@ -116,6 +116,40 @@ helm install my-todo ./k8s_charts/three-tier \
   -f custom-values.yaml
 ```
 
+## ArgoCD Notifications and Image Updater
+
+If your app is already deployed through ArgoCD, use ArgoCD Notifications and ArgoCD Image Updater to get alerts and keep image tags current.
+
+1. Install the controllers into the `argocd` namespace:
+
+```bash
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-notifications/stable/manifests/install.yaml
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+```
+
+2. Apply the sample configs from this repo:
+
+```bash
+kubectl apply -f argocd/argocd-notifications-config.yaml
+kubectl apply -f argocd/argocd-image-updater-config.yaml
+```
+
+3. Create secrets for SMTP email and repository write-back:
+
+```bash
+kubectl -n argocd create secret generic argocd-notifications-secret \
+  --from-literal=email.username=<SMTP_USERNAME> \
+  --from-literal=email.password=<SMTP_PASSWORD>
+
+kubectl -n argocd create secret generic argocd-image-updater-repo-creds \
+  --from-literal=username=<GIT_USERNAME> \
+  --from-literal=password=<GIT_PASSWORD_OR_TOKEN>
+```
+
+4. The existing ArgoCD Application manifest in `k8s_charts/three-tier/templates/argo-applications.yaml` already includes starter annotations for Image Updater and Notifications.
+
+> Update the `argocd-image-updater.argoproj.io/image-list` values and Slack secret token before using this in production.
+
 ## Manage Secrets Securely
 
 ### Using External Secrets (Recommended for Production)

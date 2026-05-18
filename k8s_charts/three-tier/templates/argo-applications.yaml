@@ -3,6 +3,16 @@ kind: Application
 metadata:
   name: three-tier-eks-app
   namespace: argocd
+  annotations:
+    # Argo CD Image Updater annotations
+    argocd-image-updater.argoproj.io/image-list: |
+      backend=011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-backend:latest
+      frontend=011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-frontend:latest
+    argocd-image-updater.argoproj.io/write-back-method: git
+
+    # Argo CD Notifications subscriptions
+    notifications.argoproj.io/subscribe.on-sync-succeeded.email: "true"
+    notifications.argoproj.io/subscribe.on-sync-failed.email: "true"
 
 spec:
   project: default
