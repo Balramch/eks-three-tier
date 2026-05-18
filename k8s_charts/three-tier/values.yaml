@@ -28,7 +28,7 @@ frontend:
   name: frontend
   replicas: 1
   image:
-    repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-frontend
+    repository: 011528274726.dkr.ecr.eu-central-1.amazonaws.com/eks-frontends
     tag: latest
     pullPolicy: IfNotPresent
   service:
